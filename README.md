@@ -24,8 +24,8 @@ Un progetto per analizzare statistiche scacchistiche ed elaborare strategie di g
   - leggi dizionario
     - con `%store -r` magic
   - crea dizionarii leggeri di white and black
-    - con `light_database(<dizionario>,<student-player>)`
-    - funzione non implementata in **src/preparedb.py**
+    - con classe `LightDatabase(<dizionario>,<student-player>)`
+    - funzione non implementata in **src/lightdb.py**
   - salva dizionarii leggeri
     - con `%store` magic
     - naming convention:
