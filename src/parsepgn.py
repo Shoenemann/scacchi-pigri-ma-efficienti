@@ -3,6 +3,17 @@ import chess
 import chess.pgn
 from chessposition import ChessPosition
 
+## known issues
+# [] 
+# in parsing the games we look if a key exists in a database
+# we use `if new_id in dizionario.keys():`
+# but it is not clear if it is the most efficient way to look this up
+# []
+# we are parsing games with python.chess
+# this library is great, but it is a bit slow
+# perhaps we can parse pgns with another lighter library
+# and then call python.chess only when we need to visualize the strategy and so on
+
 
 def gamenode_to_id(chessgamenode):
     return re.sub('[0-9]+ [0-9]+$','FEN_id ',chessgamenode.board().fen())
@@ -27,6 +38,29 @@ def parse_new_game(dizionario,new_game,depth):
             
         new_position = new_position.variation(move)
 
+# parse a game and put it into a custom database
+# dizionario : is the custom database of positions
+def parse_old_game(dizionario,new_game,depth):
+
+    new_position = new_game
+
+    for move in new_game.mainline_moves():  
+        
+        new_id = gamenode_to_id(new_position)
+
+        if new_id in dizionario.keys():
+            dizionario[new_id].update(new_position)
+        else:
+            break
+
+        if new_position.ply() == depth:
+            break
+            
+        new_position = new_position.variation(move)
+
+
+
+#break earlier, if there are less than num_games games, in the pgn file
 def parse_database(pgn,num_games,ply_depth):
     
     dictionary = {}
@@ -35,13 +69,27 @@ def parse_database(pgn,num_games,ply_depth):
 
         game = chess.pgn.read_game(pgn)
         
-        #break earlier, if there are less than num_games games, in the pgn file
         if game == None:
             break
             
         parse_new_game(dictionary,game,ply_depth)
 
     return dictionary
+
+#break earlier, if there are less than num_games games, in the pgn file
+def enrich_database(dictionary,pgn,num_games,ply_depth):
+    
+    for i in range(num_games):
+
+        game = chess.pgn.read_game(pgn)
+        
+        if game == None:
+            break
+            
+        parse_old_game(dictionary,game,ply_depth)
+
+    return 
+
 
 
 
