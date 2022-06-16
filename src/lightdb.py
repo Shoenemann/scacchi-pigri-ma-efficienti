@@ -41,21 +41,14 @@ class LightDatabase:
 
       self.FENids = list(database.keys())
 
-      self. 
 
 
-class LightAttackPosition:
-    def __init__(self,chessposition,database,light_id,FENids):
+class LightPosition:
+    def __init__(self,chessposition,FENids):
 
-        # place in the lightdatabase of positions
-        # type: Int
-        self.light_id = light_id
-
-        # list places of variations in the lightdatabase
+        # list of places of variations in the lightdatabase
         # type: [Ints]
         self.light_moves = self.compute_light_moves(chessposition,FENids)
-
-
 
     def compute_light_moves(self,chessposition,FENids):
 
@@ -74,6 +67,19 @@ class LightAttackPosition:
 
         return light_moves
 
+class LightAttackPosition(LightPosition):
+    def __init__(self,chessposition,FENids):
+        super().__init__(chessposition,FENids)
+
+class LightDefensePosition(LightPosition):
+    def __init__(self,chessposition,FENids):
+        super().__init__(chessposition,FENids)
+
+
+############################################
+#################################3
+####################
+#############
 
         self.set_basic_attributes(chessgamenode)
         
