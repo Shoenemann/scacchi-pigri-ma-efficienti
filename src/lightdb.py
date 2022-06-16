@@ -50,6 +50,14 @@ class LightPosition:
         # type: [Ints]
         self.light_moves = self.compute_light_moves(chessposition,FENids)
 
+        # the advantage estmates the quantity (wins-loses)/games
+        # type: Float
+        self.white_advantage = (chessposition.white_wins - chessposition.black_wins) / chessposition.multiplicity
+
+        # for each study_depth we will evaluate the advantage of a student-player that arrives at this position
+        # type: [Floats] 
+        self.student_advantage = []
+
     def compute_light_moves(self,chessposition,FENids):
 
         # maybe I should not iterate over the variations, but over the reasonable moves
@@ -71,9 +79,23 @@ class LightAttackPosition(LightPosition):
     def __init__(self,chessposition,FENids):
         super().__init__(chessposition,FENids)
 
+        #self.student_advantage[0]
+        if chessposition.turn == chess.WHITE:
+            self.student_advantage.append(self.white_advantage)
+        else:
+            self.student_advantage.append(0-self.white_advantage)
+
+
 class LightDefensePosition(LightPosition):
     def __init__(self,chessposition,FENids):
         super().__init__(chessposition,FENids)
+
+        #self.student_advantage[0]
+        if chessposition.turn == chess.WHITE:
+            self.student_advantage.append(0-self.white_advantage)
+        else:
+            self.student_advantage.append(self.white_advantage)
+
 
 
 ############################################
