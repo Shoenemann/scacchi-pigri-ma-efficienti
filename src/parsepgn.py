@@ -19,7 +19,16 @@ def gamenode_to_id(chessgamenode):
     return re.sub('[0-9]+ [0-9]+$','FEN_id ',chessgamenode.board().fen())
 
 def gamenode_to_movestack(chessgamenode): 
-    return chessgamenode.board().move_stack()
+    
+    movestack =  chessgamenode.board().move_stack
+    #this is a list of moves
+    # lists are unhashable, so we need to convert to a string
+    
+    movestack_uci_str = [move.uci() for move in movestack]
+    
+    # the pyhon join() method is a little weird backward
+    return "".join(movestack_uci_str)
+
 
 ###
 # parse new game: index by fen
@@ -81,7 +90,7 @@ def parse_database(pgn,num_games,ply_depth):
         if game == None:
             break
             
-        parse_new_opening_game(dictionary,game,ply_depth)
+        parse_opening_game(dictionary,game,ply_depth)
 
     return dictionary
 
@@ -95,7 +104,7 @@ def enrich_database(dictionary,pgn,num_games,ply_depth):
         if game == None:
             break
             
-        parse_old_opening_game(dictionary,game,ply_depth)
+        parse_opening_game(dictionary,game,ply_depth)
 
     return 
 
