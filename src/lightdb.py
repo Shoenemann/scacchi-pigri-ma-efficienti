@@ -49,14 +49,15 @@ class LightPosition:
         # list of places of variations in the lightdatabase
         # type: [Ints]
         self.light_moves = self.compute_light_moves(chessposition,FENids)
+        self.num_moves = len(self.light_moves)
 
         # the advantage estmates the quantity (wins-loses)/games
         # type: Float
         self.white_advantage = (chessposition.white_wins - chessposition.black_wins) / chessposition.multiplicity
 
         # for each study_depth we will evaluate the advantage of a student-player that arrives at this position
-        # type: [Floats] 
-        self.student_advantage = []
+        # type: {Ints : Floats} 
+        self.student_advantage = {}
 
     def compute_light_moves(self,chessposition,FENids):
 
@@ -81,10 +82,12 @@ class LightAttackPosition(LightPosition):
 
         #self.student_advantage[0]
         if chessposition.turn == chess.WHITE:
-            self.student_advantage.append(self.white_advantage)
+            self.student_advantagep[0]=self.white_advantage
         else:
-            self.student_advantage.append(0-self.white_advantage)
+            self.student_advantage[0] = 0-self.white_advantage
 
+        # for every study_depth we choose the move that gives best advantage, or none
+        self.attack_strategy = { 0: None }
 
 class LightDefensePosition(LightPosition):
     def __init__(self,chessposition,FENids):
@@ -92,11 +95,13 @@ class LightDefensePosition(LightPosition):
 
         #self.student_advantage[0]
         if chessposition.turn == chess.WHITE:
-            self.student_advantage.append(0-self.white_advantage)
+            self.student_advantage[0] = 0-self.white_advantage
         else:
-            self.student_advantage.append(self.white_advantage)
+            self.student_advantage[0]= self.white_advantage
 
-
+        # the following data structure requires some explanation
+        # the explanation will be given in the analysis function
+        self.defence_strategy = {}
 
 ############################################
 #################################3
