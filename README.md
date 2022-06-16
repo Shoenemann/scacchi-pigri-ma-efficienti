@@ -5,7 +5,7 @@ Un progetto per analizzare statistiche scacchistiche ed elaborare strategie di g
 
 ## flusso di elaborazione di un pgn
 
-- **notebooks/parse-pgn.ipynb**
+- **notebooks/parse_databases.ipynb**
   - apri il file
     - con `open(<filepath>)`
   - parse games in dizionario  
@@ -16,7 +16,22 @@ Un progetto per analizzare statistiche scacchistiche ed elaborare strategie di g
     - funzione implementata in **src/parsepgn.py**
   - salva dizionario
     - con `%store` magic
-    - naming convention: *data_nicknameFile_nGames_ply_nMoreGames*
+    - naming convention: 
+      - *data_nicknameFile_nGames_ply_nMoreGames*
+      - multiples of 1000 can be shortened with k
+
+- **notebooks/prepare_databases.ipynb**
+  - leggi dizionario
+    - con `%store -r` magic
+  - crea dizionarii leggeri di white and black
+    - con `light_database(<dizionario>,<student-player>)`
+    - funzione non implementata in **src/preparedb.py**
+  - salva dizionarii leggeri
+    - con `%store` magic
+    - naming convention:
+      - *light_w/b_nicknameFile_nGames_ply_nMoreGames*
+      - multiples of 1000 can be shortened with k
+
 
 
 
