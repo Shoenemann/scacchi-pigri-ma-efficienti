@@ -3,6 +3,7 @@ import chess
 import chess.pgn
 import re
 
+
 class ChessPosition:
     # self.__init__() 
     # is called the first time that a position is found in a database
@@ -26,6 +27,10 @@ class ChessPosition:
         self.id = self.my_fen_id(self.board.fen())
         self.turn = chessgamenode.turn() 
         
+        self.fen = self.board.fen()
+        self.ply = self.board.ply()
+
+
     ## Counting Attributes
     ## they are kept updated by update()
     ## while parsing the database    
