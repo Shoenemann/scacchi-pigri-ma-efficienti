@@ -1,6 +1,45 @@
 # scacchi-pigri-ma-efficienti
 Un progetto per analizzare statistiche scacchistiche ed elaborare strategie di gioco personalizzate
 
+
+
+## flusso di elaborazione di un pgn
+
+- **notebooks/parse-pgn.ipynb**
+  - apri il file
+    - con `open(<filepath>)`
+  - parse games in dizionario  
+    - con `parse_database(<file>,<n_games>,<ply>)`
+    - funzione implementata in **src/parsepgn.py**
+  - enrich data in dizionario
+    - con `enrich_database(<file>,<dizionario>,<n_more_games>,<ply>)`
+    - funzione implementata in **src/parsepgn.py**
+  - salva dizionario
+    - con `%store` magic
+    - naming convention: *data_nicknameFile_nGames_ply_nMoreGames*
+
+
+
+
+
+## come aprire preview markdown on vscode
+
+(Forse con qualche plugin, non ricordo)
+
+- `ctrl shift p` per aprire Command Palette,
+- then select `Markdown preview`
+
+shortcut:
+- `ctrl shift v`
+
+
+
+
+
+
+
+
+
 ## come aprire un Jupyter notebook
 
 **Assumptions
