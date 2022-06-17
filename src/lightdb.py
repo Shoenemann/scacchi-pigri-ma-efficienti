@@ -83,7 +83,7 @@ class LightAttackPosition(LightPosition):
 
         #self.student_advantage[0]
         if chessposition.turn == chess.WHITE:
-            self.student_advantagep[0]=self.white_advantage
+            self.student_advantage[0]=self.white_advantage
         else:
             self.student_advantage[0] = 0-self.white_advantage
 
@@ -115,6 +115,11 @@ class LightDatabase:
 
         self.max_ply = maxply
         self.num_positions = len(fen_ids)
+
+
+        
+        for position in database.values():   
+            calculate_available_moves(position,database)
 
         self.all_positions = {}
         # compute all_positions

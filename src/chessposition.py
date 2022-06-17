@@ -67,6 +67,9 @@ class ChessPosition:
         # reasonable_moves : list of chess.Move
         self.available_moves = []
         self.reasonable_moves = []
+
+        self.available_variations = {}
+        self.available_variations_movestack = {}
         
         # Notation: 
         # defence is the other, that will respond at the next ply

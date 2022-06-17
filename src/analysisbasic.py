@@ -182,7 +182,11 @@ def calculate_available_moves(position,database):
     
     for move,variation in position.variations.items(): 
         if variation in database.keys():
-            position.available_moves.append(move)   
+            position.available_moves.append(move)  
+
+    for move in position.available_moves:
+        position.available_variations[move] = position.variations[move]
+        position.available_variations_movestack[move] = position.variations[move] 
             
 def calculate_zeroth_advantage(position):
     white_advantage = (position.white_wins - position.black_wins) / position.multiplicity
