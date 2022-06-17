@@ -121,6 +121,18 @@ class LightDatabase:
 
             self.all_positions[i] = self.new_light_position(chessposition,player,self.fen2id)
 
+
+        self.positions_by_ply = {}
+        for p in range(maxply+1):
+            self.positions_by_ply[p] = [ ids for ids, pos in self.all_positions.items() if pos.ply == p ]
+
+            if len(self.positions_by_ply[p] == 0):
+                
+                self.positions_by_ply.pop(p,None)
+
+                self.max_ply = p-1
+                break
+
     def new_light_position(self,chessposition,player,fen2id):
 
         ply = chessposition.ply
