@@ -28,7 +28,6 @@ from parsepgn import parse_new_game
 #############################################
 ##      Table of contents
 ##   1. class light attack position
-##   2. class light defense position
 ##   2. class light database
 
 
@@ -36,19 +35,15 @@ from parsepgn import parse_new_game
 ##     1.       class light position
 
 
-class LightDatabase:
-    def __init__(self,database,player):
-
-      self.FENids = list(database.keys())
-
-
 
 class LightPosition:
-    def __init__(self,chessposition,FENids):
+    def __init__(self,chessposition,fen2id):
+
+        self.ply = chessposition.ply
 
         # list of places of variations in the lightdatabase
         # type: [Ints]
-        self.light_moves = self.compute_light_moves(chessposition,FENids)
+        self.light_moves = self.compute_light_moves(chessposition,fen2id)
         self.num_moves = len(self.light_moves)
 
         # the advantage estmates the quantity (wins-loses)/games
@@ -59,26 +54,29 @@ class LightPosition:
         # type: {Ints : Floats} 
         self.student_advantage = {}
 
-    def compute_light_moves(self,chessposition,FENids):
+    def compute_light_moves(self,chessposition,fen2id):
 
         # maybe I should not iterate over the variations, but over the reasonable moves
         # [] check this
 
         light_moves = []
 
-        for varID in chessposition.variations:
-          if varID == None:
+        for varFEN in chessposition.variations:
+          # it is not actually a FEN, 
+          # but it is a string that identifies the game position 
+          # see parsepgn.py  
+          if varFEN == None:
             continue
 
-          light_variation_id = FENids.index(varID)
+          light_variation_id = fen2id[varFEN]
 
           light_moves.append(light_variation_id)
 
         return light_moves
 
 class LightAttackPosition(LightPosition):
-    def __init__(self,chessposition,FENids):
-        super().__init__(chessposition,FENids)
+    def __init__(self,chessposition,fen2id):
+        super().__init__(chessposition,fen2id)
 
         #self.student_advantage[0]
         if chessposition.turn == chess.WHITE:
@@ -90,8 +88,8 @@ class LightAttackPosition(LightPosition):
         self.attack_strategy = { 0: None }
 
 class LightDefensePosition(LightPosition):
-    def __init__(self,chessposition,FENids):
-        super().__init__(chessposition,FENids)
+    def __init__(self,chessposition,fen2id):
+        super().__init__(chessposition,fen2id)
 
         #self.student_advantage[0]
         if chessposition.turn == chess.WHITE:
@@ -101,133 +99,41 @@ class LightDefensePosition(LightPosition):
 
         # the following data structure requires some explanation
         # the explanation will be given in the analysis function
-        self.defence_strategy = {}
+        self.defense_strategy = {}
 
-############################################
-#################################3
-####################
-#############
+####################################
 
-        self.set_basic_attributes(chessgamenode)
+class LightDatabase:
+    def __init__(self,database,player,maxply):
         
-        self.set_counting_attributes()
-        self.update(chessgamenode)
-        
-        self.set_strategy_attributes()
-        
-    ## Basic Attributes: 
-    ## they are computed directly here in __init__() 
-    def set_basic_attributes(self,chessgamenode):
-    
-        # board: chess.Board object
-        # id: String object
-        # turn: either chess.WHITE or chess.BLACK
-        self.board = chessgamenode.board()
-        self.id = self.my_fen_id(self.board.fen())
-        self.turn = chessgamenode.turn() 
-        
-    ## Counting Attributes
-    ## they are kept updated by update()
-    ## while parsing the database    
-    def set_counting_attributes(self):
-        
-        # moves: list of chess.Move
-        # variation: dictionary {chess.Move : String id}
-        # count_move : dictionary {chess.Move : Int}
-        self.moves = []  
-        self.variations = {}  
-        self.count_move = {}
-        
-        # counters, nonnegative Integers
-        self.multiplicity = 0
-        self.white_wins = 0
-        self.draws = 0
-        self.black_wins = 0
+        fen_ids = list(database.keys())
+        self.id2fen = {i : fen_ids[i] for i in range(len(fen_ids))}
+        self.fen2id = {fen_ids[i] : i for i in range(len(fen_ids))}
 
-    ## Strategy attributes
-    ## they are computed in analysis()
-    ## after the database has been completely parsed
-    def set_strategy_attributes(self):
-        
-        # available_moves : list of chess.Move
-        # reasonable_moves : list of chess.Move
-        self.available_moves = []
-        self.reasonable_moves = []
-        
-        # Notation: 
-        # defence is the other, that will respond at the next ply
-        
-        # attack_advantage : dictionary {Int : Float in [-1,1]}
-        # defence_advantage : dictionary {Int : Float in [-1,1]}
-        # future_advantages : dictionary of dictionaries {chess.Move : {Int : Float in [-1,1]}}
-        # future_defence_advantages : dictionary of dictionaries {chess.Move : {Int : Float in [-1,1]}}
-        self.attack_advantage = {}
-        self.defence_advantage = {}
-        self.normalized_future_advantages = {}
-        self.normalized_relative_advantages = {}
-        self.future_defence_advantages = {}
-        
-        
-        # attack_strategy : dictionary {Int : chess.Move}
-        # defence_strategy : dictionary of dictionaries {Int : {chess.Move : Int}}
-        # basic_def_strategy_encoded : dictionary {Int : chess.Move}
-        self.attack_strategy = {}
-        self.defence_strategy = {}        
-        self.basic_strategy_encoded = {}
-        
-        
-    
-    # Utility functions
-    # my_fen_id()
-        
-    def my_fen_id(self,fen_string):
-        return re.sub('[0-9]+ [0-9]+$','FEN_id ',fen_string)
-        
-    # self.update() 
-    # is called every time that a position is found in a database
-    # in particular it is called on the first time it is found
-    # chessgamenode : chess.GameNode object of the python-chess library
-    def update(self,chessgamenode):
-        self.multiplicity += 1
-        
-        game_result = chessgamenode.game().headers['Result']
-        self.update_results(game_result)
-        
-        next_position = chessgamenode.next()
-        if next_position == None:
-            next_move = None
-        else:
-            next_move = next_position.move
-            
-        self.update_moves(next_move, next_position)
-            
-    def update_results(self,game_result):
-        # with Python 3.10 you would have the syntax match...case...
-        if game_result == '1-0':
-            self.white_wins += 1
-        if game_result == '1/2-1/2':
-            self.draws += 1
-        if game_result == '0-1':
-            self.black_wins += 1
-            
-    def update_moves(self,next_move,next_position): 
-        # I count also the situations in which the game does not continue (next_move = None)
-        
-        if next_move in self.moves:
-            self.count_move[next_move] += 1
+        self.max_ply = maxply
+        self.num_positions = len(fen_ids)
 
-        else:
-            self.moves.append(next_move)
+        self.all_positions = {}
+        # compute all_positions
+        for i in range(self.num_positions):
 
-            self.count_move[next_move] = 1
-            
-            if next_position==None:
-                self.variations[next_move] = None
-                return
-            
-            next_position_fen = next_position.board().fen()
-            next_position_id = self.my_fen_id(next_position_fen)
+            chessposition = database[fen_ids[i]]
 
-            self.variations[next_move] = next_position_id
+            self.all_positions[i] = self.new_light_position(chessposition,player,self.fen2id)
 
+    def new_light_position(self,chessposition,player,fen2id):
+
+        ply = chessposition.ply
+
+        if player == "white" and ply%2 == 0: 
+            return LightAttackPosition(chessposition,fen2id)
+
+        if player == "black" and ply%2 == 1: 
+            return LightAttackPosition(chessposition,fen2id)
+
+        if player == "white" and ply%2 == 1: 
+            return LightDefensePosition(chessposition,fen2id)
+
+        if player == "black" and ply%2 == 0: 
+            return LightDefensePosition(chessposition,fen2id)
 
