@@ -28,6 +28,7 @@ class ChessPosition:
         self.turn = chessgamenode.turn() 
         
         self.fen = self.board.fen()
+        self.movestack = self.my_movestack_id(chessgamenode)
         self.ply = self.board.ply()
 
 
@@ -37,10 +38,18 @@ class ChessPosition:
     def set_counting_attributes(self):
         
         # moves: list of chess.Move
-        # variation: dictionary {chess.Move : String id}
+        # variations: dictionary {chess.Move : String id}
+        # variations_movestack: dictionary {chess.Move : String id}
         # count_move : dictionary {chess.Move : Int}
+        #
+        # the difference between variations and variationsPPGN
+        # variations uses my_fen as id; 
+        #    it stores purely by position on the board
+        # variations_movestack uses my_movestack as id; 
+        #    it stores by sequence of moves to reach the position
         self.moves = []  
         self.variations = {}  
+        self.variations_movestack = {}
         self.count_move = {}
         
         # counters, nonnegative Integers
@@ -84,10 +93,23 @@ class ChessPosition:
     
     # Utility functions
     # my_fen_id()
+    # my_movestack_id()
+    # these functions are essentially equal to those used in parsepgn.py
         
     def my_fen_id(self,fen_string):
         return re.sub('[0-9]+ [0-9]+$','FEN_id ',fen_string)
+
+    def my_movestack_id(self,chessgamenode):
+                
+        movestack =  chessgamenode.board().move_stack
+        #this is a list of moves
+        # lists are unhashable, so we need to convert to a string
         
+        movestack_uci_str = [move.uci() for move in movestack]
+        
+        # the pyhon join() method is a little weird backward
+        return "".join(movestack_uci_str)  
+
     # self.update() 
     # is called every time that a position is found in a database
     # in particular it is called on the first time it is found
