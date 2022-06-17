@@ -154,5 +154,7 @@ class ChessPosition:
             
             next_position_fen = next_position.board().fen()
             next_position_id = self.my_fen_id(next_position_fen)
-
+            next_position_movestack = self.my_movestack_id(next_position)
+            
             self.variations[next_move] = next_position_id
+            self.variations_movestack[next_move] = next_position_movestack
