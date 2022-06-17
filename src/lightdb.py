@@ -61,7 +61,10 @@ class LightPosition:
 
         light_moves = []
 
-        for varFEN in chessposition.variations:
+
+        # type ChessPosition.variations_movestack: 
+        # dictionary {chess.Move : String id}
+        for varFEN in chessposition.variations_movestack.values():
           # it is not actually a FEN, 
           # but it is a string that identifies the game position 
           # see parsepgn.py  
@@ -126,7 +129,7 @@ class LightDatabase:
         for p in range(maxply+1):
             self.positions_by_ply[p] = [ ids for ids, pos in self.all_positions.items() if pos.ply == p ]
 
-            if len(self.positions_by_ply[p] == 0):
+            if len(self.positions_by_ply[p]) == 0:
                 
                 self.positions_by_ply.pop(p,None)
 
