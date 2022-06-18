@@ -94,7 +94,7 @@ class LightAttackPosition(LightPosition):
         self.analysis_data = {}
 
 
-class LightDefensePosition(LightPosition):
+class LightDefencePosition(LightPosition):
     def __init__(self,chessposition,fen2id):
         super().__init__(chessposition,fen2id)
 
@@ -112,7 +112,7 @@ class LightDefensePosition(LightPosition):
         self.analysis_data = {}
         self.auxiliary_advantages = {}
         
-        self.defense_strategy = {}
+        self.defence_strategy = {}
 
     def compute_move_probabilities(self,chessposition,fen2id):
         # maybe I should not iterate over the variations, but over the reasonable moves
@@ -184,8 +184,8 @@ class LightDatabase:
             return LightAttackPosition(chessposition,fen2id)
 
         if player == "white" and ply%2 == 1: 
-            return LightDefensePosition(chessposition,fen2id)
+            return LightDefencePosition(chessposition,fen2id)
 
         if player == "black" and ply%2 == 0: 
-            return LightDefensePosition(chessposition,fen2id)
+            return LightDefencePosition(chessposition,fen2id)
 
