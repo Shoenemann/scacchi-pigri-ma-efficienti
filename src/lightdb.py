@@ -90,6 +90,10 @@ class LightAttackPosition(LightPosition):
         # for every study_depth we choose the move that gives best advantage, or none
         self.attack_strategy = { 0: None }
 
+        # this is explained in analysislight.analysis_atk
+        self.analysis_data = {}
+
+
 class LightDefensePosition(LightPosition):
     def __init__(self,chessposition,fen2id):
         super().__init__(chessposition,fen2id)
@@ -100,9 +104,37 @@ class LightDefensePosition(LightPosition):
         else:
             self.student_advantage[0]= self.white_advantage
 
+        self.move_probability = compute_move_probabilities(chessposition,fen2id)
+
         # the following data structure requires some explanation
         # the explanation will be given in the analysis function
+        # in analysislight.analysis_def
+        self.analysis_data = {}
+        self.auxiliary_advantages = {}
+        
         self.defense_strategy = {}
+
+    def compute_move_probabilities(self,chessposition,fen2id):
+        # maybe I should not iterate over the variations, but over the reasonable moves
+        # [] check this
+
+        probability_moves = {}
+
+
+        # type ChessPosition.variations_movestack: 
+        # dictionary {chess.Move : String id}
+        for move, varFEN in chessposition.available_variations_movestack.itemss():
+          # it is not actually a FEN, 
+          # but it is a string that identifies the game position 
+          # see parsepgn.py  
+          if varFEN == None:
+            continue
+
+          light_variation_id = fen2id[varFEN]
+
+          probability_moves[light_variation_id] = chessposition.count_move[move] / float(chessposition.multiplicity)
+	
+        return probability_moves
 
 ####################################
 
