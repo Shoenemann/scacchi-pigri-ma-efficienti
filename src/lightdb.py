@@ -111,6 +111,7 @@ class LightDefencePosition(LightPosition):
         # in analysislight.analysis_def
         self.analysis_data = {}
         self.auxiliary_advantages = {}
+        self.auxiliary_efforts = {}
         
         self.defence_strategy = {}
 
