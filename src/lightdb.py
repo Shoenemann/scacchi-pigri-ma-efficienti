@@ -50,11 +50,6 @@ class LightPosition:
         # type: Float
         self.white_advantage = (chessposition.white_wins - chessposition.black_wins) / chessposition.multiplicity
         
-        # after having used compute_end_leaf_advantage
-        if chessposition.end_leaf_white_advantage == 0.0:
-            compute_end_leaf_advantage(chessposition)
-        self.other_moves_white_advantage = chessposition.end_leaf_white_advantage
-
         # for each study_depth we will evaluate the advantage of a student-player that arrives at this position
         # type: {Ints : Floats} 
         self.student_advantage = {}
@@ -110,6 +105,13 @@ class LightDefencePosition(LightPosition):
             self.student_advantage[0]= self.white_advantage
 
         self.move_probability = compute_move_probabilities(chessposition,fen2id)
+        
+        # after having used compute_end_leaf_advantage
+        if chessposition.end_leaf_white_advantage == 0.0:
+            compute_end_leaf_advantage(chessposition)
+        self.other_moves_white_advantage = chessposition.end_leaf_white_advantage
+
+
 
         # the following data structure requires some explanation
         # the explanation will be given in the analysis function
