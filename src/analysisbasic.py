@@ -346,3 +346,19 @@ def calculate_future_advantages(position,database):
 		position.normalized_future_advantages[move] = normalized_future_advantage
 		position.normalized_relative_advantages[move] = normalized_relative_advantage
 			
+
+
+######################
+
+
+def compute_end_leaf_advantage(position,database):
+    if position.end_leaf_count == 0:
+
+        position.end_leaf_white_advantage = 0 
+
+        return 
+        
+    a= position.end_leaf_white_wins
+    b= position.end_leaf_black_wins
+    c= position.end_leaf_count
+    position.end_leaf_white_advantage = (a-b) / float(c)

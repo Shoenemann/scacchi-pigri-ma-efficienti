@@ -67,6 +67,13 @@ class ChessPosition:
         self.draws = 0
         self.black_wins = 0
 
+        
+        self.end_leaf_white_wins = 0
+        self.end_leaf_draws = 0
+        self.end_leaf_black_wins = 0
+
+        self.end_leaf_white_advantage = 0.0
+
     ## Strategy attributes
     ## they are computed in analysis()
     ## after the database has been completely parsed
@@ -130,21 +137,42 @@ class ChessPosition:
     def update(self,chessgamenode,is_end_leaf=False):
         self.multiplicity += 1
         
-        game_result = chessgamenode.game().headers['Result']
-        self.update_results(game_result)
-        
         next_position = chessgamenode.next()
         if next_position == None:
+            is_end_leaf = True
             next_move = None
         else:
             next_move = next_position.move
 
-        if next_move == None or is_end_leaf==True :
-            self.end_leaf_count += 1        
+
+        if is_end_leaf:
+            self.end_leaf_count += 1
+
+        game_result = chessgamenode.game().headers['Result']
+        self.update_results(game_result,is_end_leaf)
+
+    
             
         self.update_moves(next_move, next_position)
+
+    def update_end_leaf(self,game_result,is_end_leaf=False):
+        # with Python 3.10 you would have the syntax match...case...
+        if game_result == '1-0':
+            self.white_wins += 1
+        if game_result == '1/2-1/2':
+            self.draws += 1
+        if game_result == '0-1':
+            self.black_wins += 1
+
+        if is_end_leaf:
+            if game_result == '1-0':
+                self.end_leaf_white_wins += 1
+            if game_result == '1/2-1/2':
+                self.end_leaf_draws += 1
+            if game_result == '0-1':
+                self.end_leaf_black_wins += 1
             
-    def update_results(self,game_result):
+    def update_results(self,game_result,is_end_leaf):
         # with Python 3.10 you would have the syntax match...case...
         if game_result == '1-0':
             self.white_wins += 1
