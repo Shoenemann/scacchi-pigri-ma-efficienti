@@ -104,14 +104,9 @@ class LightDefencePosition(LightPosition):
         else:
             self.student_advantage[0]= self.white_advantage
 
-        self.move_probability = compute_move_probabilities(chessposition,fen2id)
+        self.move_probability = self.compute_move_probabilities(chessposition,fen2id)
         
-        # after having used compute_end_leaf_advantage
-        if chessposition.end_leaf_white_advantage == 0.0:
-            compute_end_leaf_advantage(chessposition)
-        self.other_moves_white_advantage = chessposition.end_leaf_white_advantage
-
-
+        self.other_moves_student_advantage = self.compute_other_moves_student_advantage(chessposition)
 
         # the following data structure requires some explanation
         # the explanation will be given in the analysis function
@@ -121,6 +116,21 @@ class LightDefencePosition(LightPosition):
         self.auxiliary_efforts = {}
         
         self.defence_strategy = {}
+
+    def compute_other_moves_student_advantage(self,chessposition):
+        
+        # after having used compute_end_leaf_advantage
+        if chessposition.end_leaf_white_advantage == 0.0:
+
+            compute_end_leaf_advantage(chessposition)
+
+        other_moves_white_advantage = chessposition.end_leaf_white_advantage
+
+        if chessposition.turn == chess.WHITE:
+            return 0-other_moves_white_advantage
+        else:
+            return other_moves_white_advantage
+
 
     def compute_move_probabilities(self,chessposition,fen2id):
         # maybe I should not iterate over the variations, but over the reasonable moves
