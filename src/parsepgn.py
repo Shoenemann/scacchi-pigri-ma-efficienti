@@ -59,6 +59,33 @@ def parse_opening_game(dizionario,new_game,depth):
             
         new_position = new_position.variation(move)
 
+def check_if_is_end_leaf(dizionario,position,mode):
+    # use this if the old database ply depth
+    # is equal to the current depth
+    # todo: need an attribute max_ply of the database
+    if mode == 1:
+        if new_position.ply() == depth:
+                is_end_leaf = True
+        else:
+            is_end_leaf = False
+
+    # use this if you are not sure that the two depths agree
+    # so we need to check manually if it is indeed an end leaf
+    # the algorithms can be greatly improved 
+    # by looking at the available moves, instead of the dictionary keys lookup
+    if mode == 2:
+        next_position = new_position.next()
+        next_id = gamenode_to_movestack(next_position)
+
+        if next_id in dizionario.keys():
+            is_end_leaf = False
+        else:
+            is_end_leaf = True
+    
+    if mode == 3:
+        # I will write here the algorithm with available_moves_lookup
+
+
 
 
 # parse a game and put it into a custom database
@@ -71,8 +98,14 @@ def parse_old_opening_game(dizionario,new_game,depth):
         
         new_id = gamenode_to_movestack(new_position)
 
+        # this block is not very fast, I (luca) know how to 
+        # implement it more efficiently, but let's just make it work for the moment
+        # btw, we can package this into a method
+        # "check if_is"
+        is_end_leaf = check_if_is_end_leaf(dizionario,new_position,1)
+
         if new_id in dizionario.keys():
-            dizionario[new_id].update(new_position)
+            dizionario[new_id].update(new_position,is_end_leaf)
         else:
             break
 
@@ -121,7 +154,7 @@ def enrich_database(dictionary,pgn,num_games,ply_depth):
 ######################
 
 
-
+# I did not implement is_end_leaf in the following two functions
 
 
 # parse a game and put it into a custom database
