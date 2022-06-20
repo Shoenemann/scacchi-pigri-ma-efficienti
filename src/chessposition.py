@@ -8,11 +8,11 @@ class ChessPosition:
     # self.__init__() 
     # is called the first time that a position is found in a database
     # chessgamenode : chess.GameNode object of the python-chess library
-    def __init__(self,chessgamenode):
+    def __init__(self,chessgamenode,is_end_leaf=False):
         self.set_basic_attributes(chessgamenode)
         
         self.set_counting_attributes()
-        self.update(chessgamenode)
+        self.update(chessgamenode,is_end_leaf)
         
         self.set_strategy_attributes()
         
@@ -51,6 +51,15 @@ class ChessPosition:
         self.variations = {}  
         self.variations_movestack = {}
         self.count_move = {}
+
+        # the chessposition has several variations,
+        # but we record in the database only some of them. 
+        # sometimes we do not record in the database 
+        # the move that continues the position.
+        # every such move is to be treated as a generic "other" move
+        # and we denote it with the keyword "None".
+        # this counter increases by one when the position is_end_leaf==True
+        self.end_leaf_count = 0
         
         # counters, nonnegative Integers
         self.multiplicity = 0
@@ -70,6 +79,7 @@ class ChessPosition:
 
         self.available_variations = {}
         self.available_variations_movestack = {}
+
         
         # Notation: 
         # defence is the other, that will respond at the next ply
@@ -117,7 +127,7 @@ class ChessPosition:
     # is called every time that a position is found in a database
     # in particular it is called on the first time it is found
     # chessgamenode : chess.GameNode object of the python-chess library
-    def update(self,chessgamenode):
+    def update(self,chessgamenode,is_end_leaf=False):
         self.multiplicity += 1
         
         game_result = chessgamenode.game().headers['Result']
@@ -128,6 +138,9 @@ class ChessPosition:
             next_move = None
         else:
             next_move = next_position.move
+
+        if next_move == None or is_end_leaf==True :
+            self.end_leaf_count += 1        
             
         self.update_moves(next_move, next_position)
             
