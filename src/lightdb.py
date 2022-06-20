@@ -49,6 +49,11 @@ class LightPosition:
         # the advantage estmates the quantity (wins-loses)/games
         # type: Float
         self.white_advantage = (chessposition.white_wins - chessposition.black_wins) / chessposition.multiplicity
+        
+        # after having used compute_end_leaf_advantage
+        if chessposition.end_leaf_white_advantage == 0.0:
+            compute_end_leaf_advantage(chessposition)
+        self.other_moves_white_advantage = chessposition.end_leaf_white_advantage
 
         # for each study_depth we will evaluate the advantage of a student-player that arrives at this position
         # type: {Ints : Floats} 
@@ -121,7 +126,6 @@ class LightDefencePosition(LightPosition):
 
         probability_moves = {}
 
-
         # type ChessPosition.variations_movestack: 
         # dictionary {chess.Move : String id}
         for move, varFEN in chessposition.available_variations_movestack.itemss():
@@ -135,6 +139,8 @@ class LightDefencePosition(LightPosition):
 
           probability_moves[light_variation_id] = chessposition.count_move[move] / float(chessposition.multiplicity)
 	
+        probability_moves["other moves"] = chessposition.end_leaf_count / float(chessposition.multiplicity)
+
         return probability_moves
 
 ####################################

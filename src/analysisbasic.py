@@ -351,7 +351,7 @@ def calculate_future_advantages(position,database):
 ######################
 
 
-def compute_end_leaf_advantage(position,database):
+def compute_end_leaf_advantage(position):
     if position.end_leaf_count == 0:
 
         position.end_leaf_white_advantage = 0 
