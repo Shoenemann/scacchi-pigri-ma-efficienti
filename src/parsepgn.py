@@ -44,10 +44,15 @@ def parse_opening_game(dizionario,new_game,depth):
         
         new_id = gamenode_to_movestack(new_position)
 
-        if new_id in dizionario.keys():
-            dizionario[new_id].update(new_position)
+        if new_position.ply() == depth:
+            is_end_leaf = True
         else:
-            dizionario[new_id] = ChessPosition(new_position)
+            is_end_leaf = False
+
+        if new_id in dizionario.keys():
+            dizionario[new_id].update(new_position,is_end_leaf)
+        else:
+            dizionario[new_id] = ChessPosition(new_position,is_end_leaf)
 
         if new_position.ply() == depth:
             break
