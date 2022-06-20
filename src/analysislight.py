@@ -31,6 +31,7 @@ def analysis_def(position,lightdb,max_study):
     if position.num_moves ==0 :
         # if there are no available moves in the database, then we are not even able to study further, after this position
         return
+
     
 
     for m in range(position.num_moves):
@@ -56,19 +57,26 @@ def analysis_def(position,lightdb,max_study):
 
         return
 
-    for m in range(1,position.num_moves):
+    for m in range(position.num_moves):
 
-        if m==1:
-            study1 = position.analysis_data[0]
+        if m==0:
+            prob = position.move_probability["other moves"]
+            adv = position.other_moves_student_advantage
+            
+            study1 = { 0 : prob*adv }
         else:
             study1 = position.auxiliary_advantages[m-1]
 
+        
+        # analysis_data[m]: {Ints : Floats}
         study2 = position.analysis_data[m]
             
         #compute auxiliary_advantages[m]
         #and auxiliary_efforts[m]
         mth_analysis_pair = distribute_study_efforts(study1,study2,max_study)
 
+        # advantages[m]:    {Ints : Floats}
+        # efforts[m]:       {Ints : Ints}
         position.auxiliary_advantages[m] = mth_analysis_pair["advantages"]
         position.auxiliary_efforts[m] = mth_analysis_pair["efforts"]
 
