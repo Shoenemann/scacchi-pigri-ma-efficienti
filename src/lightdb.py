@@ -140,7 +140,7 @@ class LightDefencePosition(LightPosition):
 
         # type ChessPosition.variations_movestack: 
         # dictionary {chess.Move : String id}
-        for move, varFEN in chessposition.available_variations_movestack.itemss():
+        for move, varFEN in chessposition.available_variations_movestack.items():
           # it is not actually a FEN, 
           # but it is a string that identifies the game position 
           # see parsepgn.py  

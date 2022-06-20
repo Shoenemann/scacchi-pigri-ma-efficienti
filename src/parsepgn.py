@@ -84,14 +84,14 @@ def check_if_is_end_leaf(dizionario,position,mode):
     
     if mode == 3:
         # I will write here the algorithm with available_moves_lookup
-
+        return 3
 
 
 
 # parse a game and put it into a custom database
 # dizionario : is the custom database of positions
 def parse_old_opening_game(dizionario,new_game,depth):
-
+    
     new_position = new_game
 
     for move in new_game.mainline_moves():  
