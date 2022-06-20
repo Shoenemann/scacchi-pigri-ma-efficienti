@@ -1,3 +1,19 @@
+def analysis(position,lightdb,max_study,student_player):
+
+        ply = position.ply
+
+        if student_player == chess.WHITE and ply%2 == 0: 
+            analysis_atk(position,lightdb,max_study)
+
+        if student_player == chess.BLACK and ply%2 == 1: 
+            analysis_atk(position,lightdb,max_study)
+
+        if student_player == chess.WHITE and ply%2 == 1: 
+            analysis_def(position,lightdb,max_study)
+
+        if student_player == chess.BLACk and ply%2 == 0: 
+            analysis_def(position,lightdb,max_study)
+
 
 def analysis_atk(position,lightdb,max_study): 
     

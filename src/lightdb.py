@@ -167,8 +167,12 @@ class LightDatabase:
         self.max_ply = maxply
         self.num_positions = len(fen_ids)
 
+        if player == "white":
+            self.player = chess.WHITE
+        else:
+            self.player = chess.BLACK
 
-        
+
         for position in database.values():   
             calculate_available_moves(position,database)
 
@@ -183,9 +187,9 @@ class LightDatabase:
 
         self.positions_by_ply = {}
         for p in range(maxply+1):
-            self.positions_by_ply[p] = [ ids for ids, pos in self.all_positions.items() if pos.ply == p ]
+            self.positions_by_ply[p] = { ids : pos for ids, pos in self.all_positions.items() if pos.ply == p }
 
-            if len(self.positions_by_ply[p]) == 0:
+            if len(self.positions_by_ply[p].keys()) == 0:
                 
                 self.positions_by_ply.pop(p,None)
 
@@ -207,4 +211,15 @@ class LightDatabase:
 
         if player == "black" and ply%2 == 0: 
             return LightDefencePosition(chessposition,fen2id)
+
+    def analyze(self,max_study):
+
+        for p in reverse(range(self.maxply)):
+
+            for position in self.positions_by_ply[p].values():
+
+                lightdb = self.positions_by_ply[p+1]
+
+                analysis(position,lightdb,max_study,self.player)
+
 
