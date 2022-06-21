@@ -180,13 +180,13 @@ def calculate_reasonable_moves(position,database,threshold):
 def calculate_available_moves(position,database):
     position.available_moves = []
     
-    for move,variation in position.variations.items(): 
+    for move,variation in position.variations_movestack.items(): 
         if variation in database.keys():
             position.available_moves.append(move)  
 
     for move in position.available_moves:
         position.available_variations[move] = position.variations[move]
-        position.available_variations_movestack[move] = position.variations[move] 
+        position.available_variations_movestack[move] = position.variations_movestack[move] 
             
 def calculate_zeroth_advantage(position):
     white_advantage = (position.white_wins - position.black_wins) / position.multiplicity

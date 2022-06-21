@@ -59,7 +59,7 @@ def parse_opening_game(dizionario,new_game,depth):
             
         new_position = new_position.variation(move)
 
-def check_if_is_end_leaf(dizionario,position,mode):
+def check_if_is_end_leaf(dizionario,new_position,mode,depth):
     # use this if the old database ply depth
     # is equal to the current depth
     # todo: need an attribute max_ply of the database
@@ -102,7 +102,7 @@ def parse_old_opening_game(dizionario,new_game,depth):
         # implement it more efficiently, but let's just make it work for the moment
         # btw, we can package this into a method
         # "check if_is"
-        is_end_leaf = check_if_is_end_leaf(dizionario,new_position,1)
+        is_end_leaf = check_if_is_end_leaf(dizionario,new_position,1,depth)
 
         if new_id in dizionario.keys():
             dizionario[new_id].update(new_position,is_end_leaf)
@@ -142,7 +142,7 @@ def enrich_database(dictionary,pgn,num_games,ply_depth):
         if game == None:
             break
             
-        parse_opening_game(dictionary,game,ply_depth)
+        parse_old_opening_game(dictionary,game,ply_depth)
 
     return 
 

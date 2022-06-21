@@ -13,6 +13,7 @@ import parsepgn
 import databaseprune
 import analysisbasic
 import display
+import analysislight
 
 
 # import specific methods
@@ -21,6 +22,7 @@ from parsepgn import *
 from databaseprune import *
 from analysisbasic import *
 from display import *
+from analysislight import *
 
 # overview of the functions that are really used
 from parsepgn import parse_new_game
@@ -214,12 +216,74 @@ class LightDatabase:
 
     def analyze(self,max_study):
 
-        for p in reverse(range(self.maxply)):
+        for p in reversed(range(self.max_ply)):
+
+            # the first nontrivial analysis 
+            # is either at maxply-1 or at maxply-2
+            # and is an attack position
+            # so, we just continue if it is defence and exactly maxply-1
+            if p == self.max_ply - 1:
+                if self.player == chess.WHITE and p%2 == 1: 
+                    continue
+
+                if self.player == chess.BLACK and p%2 == 0: 
+                    continue
 
             for position in self.positions_by_ply[p].values():
 
                 lightdb = self.positions_by_ply[p+1]
 
-                analysis(position,lightdb,max_study,self.player)
+                analysis_light(position,lightdb,max_study,self.player)
 
+
+def analysis_light_verbose(position,lightdb,max_study,student_player):
+
+        print(position,lightdb,max_study,student_player,position.ply)
+
+        ply = position.ply
+
+        if student_player == chess.WHITE and ply%2 == 0: 
+            analysis_atk_verbose(position,lightdb,max_study)
+
+        if student_player == chess.BLACK and ply%2 == 1: 
+            analysis_atk_verbose(position,lightdb,max_study)
+
+        if student_player == chess.WHITE and ply%2 == 1: 
+            analysis_def(position,lightdb,max_study)
+
+        if student_player == chess.BLACK and ply%2 == 0: 
+            analysis_def(position,lightdb,max_study)
+
+
+def analysis_atk_verbose(position,lightdb,max_study): 
+    
+    print("num_moves:",position.num_moves)
+    print("light_moves",position.light_moves)
+
+    if position.num_moves ==0 :
+        return
+    
+    for move in position.light_moves:
+        variation = lightdb[move]
+        print(variation)
+
+        # the analysis of best move is based on advantages of variations
+        position.analysis_data[move] = variation.student_advantage
+
+        print("data", position.analysis_data[move])
+    
+    for d in range(max_study): 
+        
+        slice_advantages = {move:position.analysis_data[move][d] for move in position.light_moves}
+        
+        print("slicing", d)
+        print("slice",slice_advantages)
+
+        if len(slice_advantages) == 0:
+            break
+
+        best_move = max(slice_advantages,key=slice_advantages.get)
+        
+        position.attack_strategy[d+1] = best_move
+        position.student_advantage[d+1] = slice_advantages[best_move]
 

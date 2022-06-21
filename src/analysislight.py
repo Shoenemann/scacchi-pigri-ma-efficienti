@@ -1,4 +1,31 @@
-def analysis(position,lightdb,max_study,student_player):
+#required
+import chess
+import chess.pgn
+import re
+import math
+import os #for os.path.basename() only 
+
+#source code
+# import sys
+# sys.path.append('../src')
+import chessposition
+import parsepgn
+import databaseprune
+import analysisbasic
+import display
+
+
+# import specific methods
+from chessposition import *
+from parsepgn import *
+from databaseprune import *
+from analysisbasic import *
+from display import *
+
+# overview of the functions that are really used
+from parsepgn import parse_new_game
+
+def analysis_light(position,lightdb,max_study,student_player):
 
         ply = position.ply
 
@@ -11,7 +38,7 @@ def analysis(position,lightdb,max_study,student_player):
         if student_player == chess.WHITE and ply%2 == 1: 
             analysis_def(position,lightdb,max_study)
 
-        if student_player == chess.BLACk and ply%2 == 0: 
+        if student_player == chess.BLACK and ply%2 == 0: 
             analysis_def(position,lightdb,max_study)
 
 
@@ -29,7 +56,7 @@ def analysis_atk(position,lightdb,max_study):
     
     for d in range(max_study): 
         
-        slice_advantages = {move:analysis_data[move][d] for move in position.light_moves}
+        slice_advantages = calculate_slice(position,d)
         
         if len(slice_advantages) == 0:
             break
@@ -39,8 +66,18 @@ def analysis_atk(position,lightdb,max_study):
         position.attack_strategy[d+1] = best_move
         position.student_advantage[d+1] = slice_advantages[best_move]
 
+def calculate_slice(position,d):
 
+    slice = {}
 
+    for move in position.light_moves:
+        
+        if d in position.analysis_data[move].keys():
+            
+            slice[move] = position.analysis_data[move][d]
+        
+    return slice
+       
 
 def analysis_def(position,lightdb,max_study):
 
@@ -60,16 +97,16 @@ def analysis_def(position,lightdb,max_study):
 
         prob = position.move_probability[move]
 
-        position.analysis_data[m] = {depth,prob*adv for depth,adv in variation.student_advantage.items()}
+        position.analysis_data[m] = {depth:prob*adv for depth,adv in variation.student_advantage.items()}
 
     # the missing part is the consideration of moves that are not ... considered
     # in a sense it is like having an extended light move array, where
     # we add 'none' at the end... it will be easy but I disregard in this commit
     if position.num_moves == 1:
 
-        position.student_advantage = position.analysis_data[position.light_moves[0]]
+        position.student_advantage = position.analysis_data[0]
 
-        position.defence_strategy = [d: position.light_moves[0] for for d in range(len(position.student_advantage))]
+        position.defence_strategy = {d: position.light_moves[0]  for d in range(len(position.student_advantage))}
 
         return
 
@@ -97,7 +134,7 @@ def analysis_def(position,lightdb,max_study):
         position.auxiliary_efforts[m] = mth_analysis_pair["efforts"]
 
     
-    position.student_advantage = position.auxiliary_advantages[position.num_moves]
+    position.student_advantage = position.auxiliary_advantages[position.num_moves - 1]
     
     max_study_effort = len(position.student_advantage)
     # from the auxiliary efforts one can reconstruct the strategy
@@ -127,7 +164,7 @@ def distribute_study_efforts(study1,study2,max_study):
         else: 
             i_max = len1-1
 
-        auxiliary_sums = [ study1[i]+study2[d-i] for i in range(i_min,i_max+1) ]
+        auxiliary_sums = {i: study1[i]+study2[d-i] for i in range(i_min,i_max+1) }
 
         auxiliary_efforts[d] = max(auxiliary_sums,key=auxiliary_sums.get)
         auxiliary_advantages[d] = auxiliary_sums[auxiliary_efforts[d]]
@@ -145,8 +182,9 @@ def parse_light_defence_strategy(position,max_study_effort):
 
         for m in reversed(range(1,position.num_moves)):
 
-            strategy[d][m] = remaining_effort - position.auxiliary_study_efforts[m]
-            remaining_effort = position.auxiliary_study_efforts[m]
+            r = remaining_effort
+            strategy[d][m] = r - position.auxiliary_efforts[m][r]
+            remaining_effort = position.auxiliary_efforts[m][r]
 
         strategy[d][0] = remaining_effort
 
