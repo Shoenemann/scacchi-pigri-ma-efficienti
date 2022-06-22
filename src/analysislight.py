@@ -106,7 +106,7 @@ def analysis_def(position,lightdb,max_study):
 
         position.student_advantage = position.analysis_data[0]
 
-        position.defence_strategy = {d: position.light_moves[0]  for d in range(len(position.student_advantage))}
+        position.defence_strategy = {d: { 0: d }  for d in range(len(position.student_advantage))}
 
         return
 
