@@ -14,6 +14,77 @@ def orange():
     return "#777700"
 
 
+
+
+######################
+# 
+# given an analyzed light database
+# displays the strategy to study    
+
+def print_strategy_light_recursive(database,position_id,depth,probability,counter):
+
+    if depth == 0:
+        return
+
+    position = database.all_positions[position_id]
+    position_pseudopgn = database.id2fen[position_id]
+
+    # here print info
+    if not position.is_attack:
+        # this blank line is for a clean output
+        print("")
+
+    print_light_position_info(position,position_id,depth,probability,counter)
+    print(position_pseudopgn)
+
+    # after we print, we increase the counter by one
+    counter+=1
+    
+    # now continue recursively
+    if position.is_attack:
+
+        next_position_id = position.attack_strategy
+        counter = print_strategy_light_recursive(database,next_position_id,depth-1,probability,counter)
+
+
+    else:
+        
+        for m in range(position.num_moves):
+            
+            next_position_id = position.light_moves[m]
+
+            next_probability = probability * position.move_probability[next_position_id]
+
+            next_depth = position.defence_strategy[d][m]
+
+            counter = print_strategy_light_recursive(database,next_position_id,next_depth,next_probability,counter) 
+
+    return counter
+
+
+
+
+    
+def print_light_position_info(position,id_pos,depth,probability, counter):
+
+    ply = position.ply
+
+    adv_study = position.student_advantage[depth]
+    adv_nostudy = position.student_advantage[0]
+
+    adv = truncate_percent(adv_study - adv_nostudy)
+    rel_adv = truncate_percent((adv_study - adv_nostudy) * probability)
+    prob = truncate_percent(probability)
+
+
+    print("count:",counter,"ply:" ply,"id:",id_pos,"to_study:",depth)
+    print("prob%:",prob,"adv%:",adv,"rel_adv",rel_adv)
+
+# import math
+def truncate_percent(my_float):
+    return math.floor(my_float*10000)/100
+
+
 ######################
 
 ## given a position of an analyzed database,and

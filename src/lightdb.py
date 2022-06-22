@@ -234,6 +234,14 @@ class LightDatabase:
                 lightdb = self.positions_by_ply[p+1]
 
                 analysis_light(position,lightdb,max_study,self.player)
+    
+    def print_strategy(self):
+
+        root = self.all_positions[0]
+
+        best_study_depth = max(root.student_advantage,key=root.student_advantage.get) 
+
+        print_strategy_light_recursive(self,root,best_study_depth)
 
 
 def analysis_light_verbose(position,lightdb,max_study,student_player):
