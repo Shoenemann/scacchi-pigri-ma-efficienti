@@ -38,7 +38,7 @@ class FastPosition:
 
 
 
-def fastparse_database(pgn,num_games,ply_depth):
+def fastparse_database(pgn,num_games,ply_depth,mode = "normal"):
     
     dictionary = FastDictionary()
     
@@ -49,14 +49,14 @@ def fastparse_database(pgn,num_games,ply_depth):
         if game == None:
             break
             
-        fastparse_game(dictionary,game,ply_depth)
+        fastparse_game(dictionary,game,ply_depth,mode)
 
     return dictionary
 
 
 
 
-def fastparse_game(fastdictionary,game,ply_depth):
+def fastparse_game(fastdictionary,game,ply_depth,mode = "normal"):
     
     game_result = game.headers['Result']
 
@@ -69,6 +69,12 @@ def fastparse_game(fastdictionary,game,ply_depth):
         uci = move.uci()
 
         if uci not in position.move_variations.keys():
+
+            if mode == "enrich":
+              # when we are in the mode "enrich", we update positions that are already in the database
+              # if we encounter a completely new position, we just abort the game parse and pass to the next game
+              break
+
             variation = fastdictionary.new_position()
             position.move_variations[uci]=variation
 
