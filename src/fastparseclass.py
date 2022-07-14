@@ -38,34 +38,39 @@ class FastPosition:
 
 
 
-def fastparse_database(pgn,num_games,ply_depth):
-    
-    dictionary = FastDictionary()
-    
-    for i in range(num_games):
+def fastparse_database(pgn,num_games,ply_depth,verbosity=1000):
+  
+  dictionary = FastDictionary()
+  
+  for i in range(num_games):
+    if verbosity>0 and i%verbosity ==0:
+      clear_output()
+      print(i)
 
-        game = chess.pgn.read_game(pgn)
+    game = chess.pgn.read_game(pgn)
+    
+    if game == None:
+        break
         
-        if game == None:
-            break
-            
-        fastparse_game(dictionary,game,ply_depth,"normal")
+    fastparse_game(dictionary,game,ply_depth,"normal")
 
-    return dictionary
+  return dictionary
 
 
 
 def fastenrich_database(pgn,num_games,ply_depth,dictionary,verbosity=1000):
     
-    for i in range(num_games):
-        if verbosity>0 and i%verbosity ==0:
-          print(i)
+  for i in range(num_games):
+    if verbosity>0 and i%verbosity ==0:
+      clear_output()
+      print(i)
+      
 
-        game = chess.pgn.read_game(pgn)
-        if game == None:
-            break
-            
-        fastparse_game(dictionary,game,ply_depth,"enrich")
+    game = chess.pgn.read_game(pgn)
+    if game == None:
+        break
+        
+    fastparse_game(dictionary,game,ply_depth,"enrich")
 
     return dictionary
 
