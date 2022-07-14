@@ -2,6 +2,10 @@ import re
 import chess
 import chess.pgn
 from chessposition import ChessPosition
+import fastparseclass
+from fastparseclass import *
+
+
 
 ## known issues
 # [] 
@@ -29,17 +33,15 @@ def gamenode_to_movestack(chessgamenode):
     # the pyhon join() method is a little weird backward
     return "".join(movestack_uci_str)
 
-
-def fastparse(dictionary,new_game,depth):
+#########################
+##################
+######
 
 
 
 ###
 # parse new game: index by fen
 # parse opening game: index by moves leading to the node
-
-
-
 # parse a game and put it into a custom database
 # dizionario : is the custom database of positions
 def parse_opening_game(dizionario,new_game,depth):
