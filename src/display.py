@@ -24,13 +24,13 @@ def orange():
 def print_strategy_light_recursive(database,position_id,depth,probability,counter):
 
     if depth == 0:
-        return
+        return counter
 
     position = database.all_positions[position_id]
     position_pseudopgn = database.id2fen[position_id]
 
     # here print info
-    if not position.is_attack:
+    if database.is_attack(position):
         # this blank line is for a clean output
         print("")
 
@@ -41,9 +41,9 @@ def print_strategy_light_recursive(database,position_id,depth,probability,counte
     counter+=1
     
     # now continue recursively
-    if position.is_attack:
+    if database.is_attack(position):
 
-        next_position_id = position.attack_strategy
+        next_position_id = position.attack_strategy[depth]
         counter = print_strategy_light_recursive(database,next_position_id,depth-1,probability,counter)
 
 
@@ -55,9 +55,9 @@ def print_strategy_light_recursive(database,position_id,depth,probability,counte
 
             next_probability = probability * position.move_probability[next_position_id]
 
-            next_depth = position.defence_strategy[d][m]
+            nextdepth = position.defence_strategy[depth][m]
 
-            counter = print_strategy_light_recursive(database,next_position_id,next_depth,next_probability,counter) 
+            counter = print_strategy_light_recursive(database,next_position_id,nextdepth,next_probability,counter) 
 
     return counter
 
@@ -77,7 +77,7 @@ def print_light_position_info(position,id_pos,depth,probability, counter):
     prob = truncate_percent(probability)
 
 
-    print("count:",counter,"ply:" ply,"id:",id_pos,"to_study:",depth)
+    print("count:",counter,"ply:", ply,"id:",id_pos,"to_study:",depth)
     print("prob%:",prob,"adv%:",adv,"rel_adv",rel_adv)
 
 # import math

@@ -1,0 +1,59 @@
+a365light = {}
+
+#print("--------eco")
+a365light["a365light_w_c25_all_20"] = a365light_w_c25_all_20
+a365light["a365light_b_c25_all_20"] = a365light_b_c25_all_20
+
+#print("--------few elite")
+a365light["a365light_w_elite_100_10"] = a365light_w_elite_100_10
+a365light["a365light_b_elite_100_10"] = a365light_b_elite_100_10
+
+a365light["a365light_w_elite_1000_10"] = a365light_w_elite_1000_10
+a365light["a365light_b_elite_1000_10"] = a365light_b_elite_1000_10
+
+a365light["a365light_w_elite_10000_10"] = a365light_w_elite_10000_10
+a365light["a365light_b_elite_10000_10"] = a365light_b_elite_10000_10
+
+
+#print("-------enriched")
+
+a365light["a365light_w_elite_1000_6_20000"] = a365light_w_elite_1000_6_20000
+a365light["a365light_b_elite_1000_6_20000"] = a365light_b_elite_1000_6_20000
+
+a365light["a365light_w_elite_1000_10_20000"] = a365light_w_elite_1000_10_20000
+a365light["a365light_b_elite_1000_10_20000"] = a365light_b_elite_1000_10_20000
+
+a365light["a365light_w_elite_10000_12_20000"] = a365light_w_elite_10000_12_20000
+a365light["a365light_b_elite_10000_12_20000"] = a365light_b_elite_10000_12_20000
+
+a365light["a365light_w_elite_1000_10_300000"] = a365light_w_elite_1000_10_300000
+a365light["a365light_b_elite_1000_10_300000"] = a365light_b_elite_1000_10_300000
+
+#print("--------trim20")
+
+
+a365light["a365light_w_elite_1000_6_20000_t20"] = a365light_w_elite_1000_6_20000_t20
+a365light["a365light_b_elite_1000_6_20000_t20"] = a365light_b_elite_1000_6_20000_t20
+
+a365light["a365light_w_elite_1000_10_20000_t20"] = a365light_w_elite_1000_10_20000_t20
+a365light["a365light_b_elite_1000_10_20000_t20"] = a365light_b_elite_1000_10_20000_t20
+
+a365light["a365light_w_elite_10000_12_20000_t20"] = a365light_w_elite_10000_12_20000_t20
+a365light["a365light_b_elite_10000_12_20000_t20"] = a365light_b_elite_10000_12_20000_t20
+
+a365light["a365light_w_elite_1000_10_300000_t20"] = a365light_w_elite_1000_10_300000_t20
+a365light["a365light_b_elite_1000_10_300000_t20"] = a365light_b_elite_1000_10_300000_t20
+
+#print("--------trim100")
+
+a365light["a365light_w_elite_1000_6_20000_t100"] = a365light_w_elite_1000_6_20000_t100
+a365light["a365light_b_elite_1000_6_20000_t100"] = a365light_b_elite_1000_6_20000_t100
+
+a365light["a365light_w_elite_1000_10_20000_t100"] = a365light_w_elite_1000_10_20000_t100
+a365light["a365light_b_elite_1000_10_20000_t100"] = a365light_b_elite_1000_10_20000_t100
+
+a365light["a365light_w_elite_10000_12_20000_t100"] = a365light_w_elite_10000_12_20000_t100
+a365light["a365light_b_elite_10000_12_20000_t100"] = a365light_b_elite_10000_12_20000_t100
+
+a365light["a365light_w_elite_1000_10_300000_t100"] = a365light_w_elite_1000_10_300000_t100
+a365light["a365light_b_elite_1000_10_300000_t100"] = a365light_b_elite_1000_10_300000_t100

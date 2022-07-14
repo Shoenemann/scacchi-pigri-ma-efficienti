@@ -30,9 +30,15 @@ def gamenode_to_movestack(chessgamenode):
     return "".join(movestack_uci_str)
 
 
+def fastparse(dictionary,new_game,depth):
+
+
+
 ###
 # parse new game: index by fen
 # parse opening game: index by moves leading to the node
+
+
 
 # parse a game and put it into a custom database
 # dizionario : is the custom database of positions

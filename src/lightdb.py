@@ -83,6 +83,8 @@ class LightAttackPosition(LightPosition):
     def __init__(self,chessposition,fen2id):
         super().__init__(chessposition,fen2id)
 
+        self.is_attack = True
+
         #self.student_advantage[0]
         if chessposition.turn == chess.WHITE:
             self.student_advantage[0]=self.white_advantage
@@ -99,6 +101,8 @@ class LightAttackPosition(LightPosition):
 class LightDefencePosition(LightPosition):
     def __init__(self,chessposition,fen2id):
         super().__init__(chessposition,fen2id)
+
+        self.is_attack = False
 
         #self.student_advantage[0]
         if chessposition.turn == chess.WHITE:
@@ -241,7 +245,28 @@ class LightDatabase:
 
         best_study_depth = max(root.student_advantage,key=root.student_advantage.get) 
 
-        print_strategy_light_recursive(self,root,best_study_depth)
+        print_strategy_light_recursive(self,0,best_study_depth,1.0,0)
+
+    def print_best_advantage(self):
+
+        root = self.all_positions[0]
+
+        best_study_depth = max(root.student_advantage,key=root.student_advantage.get) 
+
+        print("depth:",best_study_depth,"adv",root.student_advantage[best_study_depth])
+
+    def is_attack(self,position):
+
+        ply = position.ply
+
+        if self.player == chess.WHITE:
+            if ply%2 == 0:
+                return True
+        if self.player == chess.BLACK:
+            if ply%2 == 1:
+                return True
+        return False
+        
 
 
 def analysis_light_verbose(position,lightdb,max_study,student_player):

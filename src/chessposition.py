@@ -184,7 +184,7 @@ class ChessPosition:
     def update_moves(self,next_move,next_position): 
         # I count also the situations in which the game does not continue (next_move = None)
         
-        if next_move in self.moves:
+        if next_move in self.count_move.keys():
             self.count_move[next_move] += 1
 
         else:
