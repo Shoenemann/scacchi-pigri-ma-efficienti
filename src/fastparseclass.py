@@ -55,9 +55,11 @@ def fastparse_database(pgn,num_games,ply_depth):
 
 
 
-def fastenrich_database(pgn,num_games,ply_depth,dictionary):
+def fastenrich_database(pgn,num_games,ply_depth,dictionary,verbosity=1000):
     
     for i in range(num_games):
+        if verbosity>0 and i%verbosity ==0:
+          print(i)
 
         game = chess.pgn.read_game(pgn)
         if game == None:
