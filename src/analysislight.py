@@ -12,7 +12,7 @@ import chessposition
 import parsepgn
 import databaseprune
 import analysisbasic
-import display
+import displaychess
 
 
 # import specific methods
@@ -20,7 +20,7 @@ from chessposition import *
 from parsepgn import *
 from databaseprune import *
 from analysisbasic import *
-from display import *
+from displaychess import *
 
 # overview of the functions that are really used
 from parsepgn import parse_new_game

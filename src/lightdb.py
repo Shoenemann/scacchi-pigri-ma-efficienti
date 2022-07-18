@@ -12,7 +12,7 @@ import chessposition
 import parsepgn
 import databaseprune
 import analysisbasic
-import display
+import displaychess
 import analysislight
 
 
@@ -21,7 +21,7 @@ from chessposition import *
 from parsepgn import *
 from databaseprune import *
 from analysisbasic import *
-from display import *
+from displaychess import *
 from analysislight import *
 
 # overview of the functions that are really used

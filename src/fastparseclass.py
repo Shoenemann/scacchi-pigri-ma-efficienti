@@ -1,6 +1,10 @@
 import chess
 import chess.pgn
 
+# for clear_output
+from IPython.display import clear_output
+
+
 class FastDictionary:
   def __init__(self):
     #self.max_ply = maxply
@@ -68,11 +72,11 @@ def fastenrich_database(pgn,num_games,ply_depth,dictionary,verbosity=1000):
 
     game = chess.pgn.read_game(pgn)
     if game == None:
-        break
+      break
         
     fastparse_game(dictionary,game,ply_depth,"enrich")
 
-    return dictionary
+  return dictionary
 
 
 
@@ -82,7 +86,6 @@ def fastenrich_database(pgn,num_games,ply_depth,dictionary,verbosity=1000):
 def fastparse_game(fastdictionary,game,ply_depth,mode = "normal"):
     
     game_result = game.headers['Result']
-
     position = fastdictionary.all_positions[0]
     position.update_count(game_result)
     
